@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LogLens — 轻量级日志分析工具</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: #0f172a;
+  color: #e2e8f0;
+  line-height: 1.6;
+}
+.container { max-width: 960px; margin: 0 auto; padding: 2rem; }
+header { text-align: center; padding: 3rem 0 2rem; }
+header h1 { font-size: 2.8rem; font-weight: 800; color: #fff; letter-spacing: -0.02em; }
+header .tagline { color: #94a3b8; font-size: 1.1rem; margin-top: 0.5rem; }
+header .badge {
+  display: inline-block; background: #4ade80; color: #064e3b;
+  font-size: 0.75rem; font-weight: 700; padding: 0.25rem 0.6rem; border-radius: 999px;
+  margin-top: 1rem; text-transform: uppercase; letter-spacing: 0.05em;
+}
+.section { margin-bottom: 2.5rem; }
+.section h2 { font-size: 1.3rem; color: #fff; margin-bottom: 1rem; border-left: 3px solid #4ade80; padding-left: 0.75rem; }
+.card { background: #1e293b; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; }
+.card h3 { color: #fff; font-size: 1.1rem; margin-bottom: 0.5rem; }
+.card p, .card li { color: #cbd5e1; font-size: 0.95rem; }
+.card ul { margin-left: 1.2rem; }
+.card li { margin-bottom: 0.3rem; }
+pre {
+  background: #0b1120; border: 1px solid #334155; border-radius: 8px;
+  padding: 1rem; overflow-x: auto; font-family: 'SF Mono', Monaco, Consolas, monospace;
+  font-size: 0.85rem; color: #e2e8f0; margin: 0.8rem 0;
+}
+code { font-family: 'SF Mono', Monaco, Consolas, monospace; background: #334155; padding: 0.15rem 0.35rem; border-radius: 4px; font-size: 0.9em; }
+.btn {
+  display: inline-block; background: #4ade80; color: #064e3b; font-weight: 700;
+  padding: 0.6rem 1.2rem; border-radius: 8px; text-decoration: none; margin-right: 0.5rem; margin-bottom: 0.5rem;
+  transition: transform 0.15s;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn.secondary { background: #334155; color: #e2e8f0; }
+.grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+footer { text-align: center; color: #64748b; font-size: 0.85rem; padding: 2rem 0; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>LogLens</h1>
+  <div class="tagline">轻量级日志分析工具 · 纯 Python 标准库 · 零依赖</div>
+  <div class="badge">L7 · 传奇</div>
+</header>
+
+<div style="text-align:center;margin-bottom:2rem;">
+  <a class="btn" href="https://github.com/1fzx23/loglens" target="_blank">GitHub 仓库</a>
+  <a class="btn secondary" href="https://github.com/1fzx23/loglens#readme" target="_blank">完整文档</a>
+</div>
+
+<div class="section">
+  <h2>功能亮点</h2>
+  <div class="grid-2">
+    <div class="card">
+      <h3>格式自动识别</h3>
+      <p>自动识别 Nginx/Apache 访问日志、syslog、常见应用日志（ISO 时间戳），识别不了就回退纯文本，也可 <code>--format</code> 强制指定。</p>
+    </div>
+    <div class="card">
+      <h3>错误模式聚类</h3>
+      <p>把消息里的数字、IP、UUID、路径归一化成占位符，散落的同类错误自动合并，附带出现次数与时间跨度。</p>
+    </div>
+    <div class="card">
+      <h3>多维统计与过滤</h3>
+      <p>级别/状态码/Top IP/请求路径分布 + 时间线；按级别、时间范围、关键字、正则过滤，支持 stdin 管道。</p>
+    </div>
+    <div class="card">
+      <h3>三种报告输出</h3>
+      <p>自包含 HTML 报告（内嵌 SVG 图表、无 JS）、Markdown、JSON——最后一种可直接喂给脚本或 AI 工作流。</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h2>快速开始</h2>
+  <div class="card">
+    <h3>安装</h3>
+    <pre>git clone https://github.com/1fzx23/loglens.git
+cd loglens
+python loglens.py --help</pre>
+  </div>
+  <div class="card">
+    <h3>常用命令</h3>
+    <pre># 统计 nginx 访问日志（级别/状态码/Top IP/时间线）
+python loglens.py stats access.log
+
+# 错误聚类：同类错误合并计数
+python loglens.py errors app.log --top 20
+
+# 过滤今晚 22 点以后的 ERROR/CRITICAL
+python loglens.py filter app.log --level ERROR,CRITICAL --since "2026-10-11T22:00"
+
+# 管道 stdin
+cat error.log | python loglens.py errors -
+
+# 生成自包含 HTML 报告
+python loglens.py report access.log</pre>
+  </div>
+</div>
+
+<div class="section">
+  <h2>错误聚类效果</h2>
+  <div class="card">
+    <p>3 条不同订单号、不同端口的超时报错，被合并成 1 个模式：</p>
+    <pre>[1] ×4      ERROR            10-11 09:02~10-11 09:05
+    orders Order &lt;N&gt; failed: TimeoutError after &lt;N&gt;s connecting to payment-gw:&lt;N&gt;</pre>
+    <p>变量归一化为 <code>&lt;N&gt;</code> / <code>&lt;IP&gt;</code> / <code>&lt;UUID&gt;</code> / <code>&lt;PATH&gt;</code>，一眼定位高频问题。</p>
+  </div>
+</div>
+
+<div class="section">
+  <h2>技术栈</h2>
+  <div class="card">
+    <ul>
+      <li>Python 3.9+</li>
+      <li>零外部依赖（仅标准库：<code>re</code>、<code>argparse</code>、<code>json</code>、<code>datetime</code> 等）</li>
+      <li>手工解析 nginx 时间，无 locale 陷阱；时区友好</li>
+      <li>支持 Windows / macOS / Linux</li>
+    </ul>
+  </div>
+</div>
+
+<footer>
+  <p>LogLens © 2026 · <a href="https://github.com/1fzx23" style="color:#94a3b8;">1fzx23</a> · MIT License</p>
+  <p style="margin-top:0.5rem;font-size:0.75rem;">每两周一个小工具系列</p>
+</footer>
+
+</div>
+</body>
+</html>
