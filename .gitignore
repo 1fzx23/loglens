@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+
+# 报告产物
+*.report.html
+*.report.md
+*.report.json
+
+# 系统
+.DS_Store
+Thumbs.db
