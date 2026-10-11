@@ -1,0 +1,13 @@
+2026-10-11 09:00:00,101 INFO main Application starting, version 3.2.1
+2026-10-11 09:00:01,355 INFO db.pool Connected to postgres://db-01.example.com:5432/appdb
+2026-10-11 09:00:02,010 DEBUG cache Loading config from redis://cache-01
+2026-10-11 09:01:12,887 WARN ratelimit Client 203.0.113.5 exceeded 100 req/min, throttling
+2026-10-11 09:02:41,902 ERROR orders Order 98765 failed: TimeoutError after 30s connecting to payment-gw:8443
+2026-10-11 09:02:42,101 ERROR orders Order 98766 failed: TimeoutError after 30s connecting to payment-gw:8443
+2026-10-11 09:02:43,310 ERROR orders Order 98767 failed: TimeoutError after 30s connecting to payment-gw:8443
+2026-10-11 09:03:05,220 INFO orders Retry succeeded for order 98765 after 23s
+2026-10-11 09:05:30,944 ERROR orders Order 98768 failed: TimeoutError after 30s connecting to payment-gw:8443
+2026-10-11 09:05:55,010 CRITICAL gateway Upstream payment-gw:8443 returned 502, marking circuit open
+2026-10-11 09:06:00,500 INFO gateway Circuit breaker OPEN, fast-failing requests for 60s
+2026-10-11 09:07:00,700 INFO gateway Circuit breaker HALF-OPEN, probing payment-gw:8443
+2026-10-11 09:07:02,830 INFO gateway Circuit breaker CLOSED, upstream healthy again
